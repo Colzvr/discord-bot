@@ -5,9 +5,11 @@ import com.colzvr.bot.impl.command.ArgsNodeWrapper;
 import com.colzvr.bot.util.ArrayUtil;
 import com.wizardlybump17.wlib.command.RegisteredCommand;
 import com.wizardlybump17.wlib.command.args.ArgsNode;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
@@ -27,6 +29,10 @@ public class BotListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+        Guild guild = event.getGuild();
+        for (Command command : guild.retrieveCommands().complete())
+            command.delete().complete();
+
         List<RegisteredCommand> commands = Main.getCommandManager().getCommands();
 
         Set<CommandData> commandsData = new HashSet<>();
@@ -51,7 +57,7 @@ public class BotListener extends ListenerAdapter {
                                 ArgsNodeWrapper.wrap(node.getReader() == null ? String.class : node.getReader().getType()),
                                 node.getName(),
                                 node.getDescription() == null ? node.getName() : node.getDescription(),
-                                true
+                                node.isRequired()
                         )
                 );
 
@@ -59,6 +65,6 @@ public class BotListener extends ListenerAdapter {
             }
         }
 
-        Main.getJda().getGuildById(Main.COLZVR).updateCommands().addCommands(commandsData).queue();
+        guild.updateCommands().addCommands(commandsData).complete();
     }
 }

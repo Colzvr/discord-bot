@@ -24,18 +24,34 @@ public class AdminCommands {
 
     @Command(execution = "clear <amount>", permission = "MESSAGE_MANAGE", options = {"slash"})
     public void clear(MemberContextSender sender, @Description("How many messages it should delete") int amount) {
-        if (amount > 99) {
-            sender.slashEvent().reply("You can only delete 99 messages at a time.")
+        if (amount > 100) {
+            sender.slashEvent().reply("You can only delete 100 messages at a time.")
                     .setEphemeral(true)
                     .queue();
             return;
         }
 
-        sender.channel().getHistory().retrievePast(amount + 1).queue(messages -> {
+        sender.channel().getHistory().retrievePast(amount).queue(messages -> {
             for (Message message : messages)
                 message.delete().queue();
         });
 
         sender.slashEvent().reply("Deleting...").setEphemeral(true).queue();
+    }
+
+//    @Command(execution = "spam <amount>", permission = "MANAGE_SERVER", options = {"slash"})
+//    public void spam(MemberContextSender sender, @Description("How many messages it should spam") int amount) {
+//        for (int i = 0; i < amount; i++)
+//            sender.sendMessage("SPAM");
+//
+//        sender.slashEvent().reply("Spamming...").setEphemeral(true).queue();
+//    }
+
+    @Command(execution = "spam <amount> <message>", permission = "MANAGE_SERVER", options = {"slash"})
+    public void spam(MemberContextSender sender, @Description("How many messages it should spam") int amount, @Description("The message to spam") String[] message) {
+        for (int i = 0; i < amount; i++)
+            sender.sendMessage(String.join(" ", message));
+
+        sender.slashEvent().reply("Spamming...").setEphemeral(true).queue();
     }
 }

@@ -33,7 +33,7 @@ public class Main {
     private static void leaveGuilds() {
         for (Guild guild : jda.getGuilds())
             if (!guild.getId().equals(COLZVR))
-                guild.leave().queue();
+                guild.leave().complete();
     }
 
     private static void initCommandManager() {
