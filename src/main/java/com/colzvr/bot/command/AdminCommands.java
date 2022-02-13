@@ -2,6 +2,7 @@ package com.colzvr.bot.command;
 
 import com.colzvr.bot.impl.command.MemberContextSender;
 import com.wizardlybump17.wlib.command.Command;
+import com.wizardlybump17.wlib.command.Description;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -22,10 +23,19 @@ public class AdminCommands {
     }
 
     @Command(execution = "clear <amount>", permission = "MESSAGE_MANAGE", options = {"slash"})
-    public void clear(MemberContextSender sender, int amount) {
+    public void clear(MemberContextSender sender, @Description("How many messages it should delete") int amount) {
+        if (amount > 99) {
+            sender.slashEvent().reply("You can only delete 99 messages at a time.")
+                    .setEphemeral(true)
+                    .queue();
+            return;
+        }
+
         sender.channel().getHistory().retrievePast(amount + 1).queue(messages -> {
             for (Message message : messages)
                 message.delete().queue();
         });
+
+        sender.slashEvent().reply("Deleting...").setEphemeral(true).queue();
     }
 }

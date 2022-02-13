@@ -6,9 +6,8 @@ import com.wizardlybump17.wlib.command.CommandSender;
 import com.wizardlybump17.wlib.command.holder.CommandExecutor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class JDASlashCommandExecutor extends ListenerAdapter implements CommandExecutor {
 
@@ -20,7 +19,12 @@ public class JDASlashCommandExecutor extends ListenerAdapter implements CommandE
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String[] split = event.getCommandString().split(" ");
+        StringBuilder builder = new StringBuilder();
+        for (OptionMapping option : event.getOptions())
+            builder.append(option.getAsString()).append(" ");
+
+        String[] args = builder.toString().split(" ");
+
         MemberContextSender sender = new MemberContextSender(
                 event.getMember(),
                 null,
@@ -30,8 +34,8 @@ public class JDASlashCommandExecutor extends ListenerAdapter implements CommandE
         );
         execute(
                 sender,
-                split[0],
-                Arrays.copyOfRange(split, 1, split.length)
+                event.getName(),
+                args
         );
     }
 

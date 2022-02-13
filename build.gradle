@@ -18,4 +18,7 @@ dependencies {
             'com.wizardlybump17.wlib:commands:1.3.1',
             'com.wizardlybump17.wlib:objects:1.3.1'
     )
+    annotationProcessor(
+            'org.projectlombok:lombok:1.18.22'
+    )
 }
