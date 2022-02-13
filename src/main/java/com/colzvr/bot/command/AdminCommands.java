@@ -23,6 +23,13 @@ public class AdminCommands {
 
     @Command(execution = "clear <amount>", permission = "MESSAGE_MANAGE", options = {"slash"})
     public void clear(MemberContextSender sender, int amount) {
+        if (amount > 99) {
+            sender.slashEvent().reply("You can only delete 99 messages at a time.")
+                    .setEphemeral(true)
+                    .queue();
+            return;
+        }
+
         sender.channel().getHistory().retrievePast(amount + 1).queue(messages -> {
             for (Message message : messages)
                 message.delete().queue();

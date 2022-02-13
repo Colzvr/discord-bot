@@ -20,7 +20,7 @@ public class JDASlashCommandExecutor extends ListenerAdapter implements CommandE
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String[] split = event.getCommandString().split(" ");
+        String[] split = event.getCommandString().substring(1).split(" ");
         MemberContextSender sender = new MemberContextSender(
                 event.getMember(),
                 null,
